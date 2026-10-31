@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TyCred · Crédito e Recuperação</title>
+<style>
+:root{--bg:#e9eef6;--panel:#fff;--side:#f3f6fb;--ink:#0f2a4a;--mute:#6b7c93;--line:#dbe3ef;--brand:#1d4ed8;--soft:#dbe7ff;--deep:#0b2a6f;--accent:#bcd3ff;--ok:#15803d;--okbg:#dcfce7;--bad:#c81e3a;--badbg:#fee2e6;--warn:#a15c07;--warnbg:#fff1d6;--sel:#2f6df0}
+@media(prefers-color-scheme:dark){:root{--bg:#0a1424;--panel:#111f36;--side:#0d1a2e;--ink:#e6edf8;--mute:#93a4bd;--line:#223552;--brand:#6c9bff;--soft:#1b315c;--deep:#a9c4ff;--accent:#2a4a8a;--ok:#4ade80;--okbg:#12361f;--bad:#ff7a90;--badbg:#3d1620;--warn:#fbbf5a;--warnbg:#3b2a0c}}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.app{display:grid;grid-template-columns:240px 1fr;max-width:1500px;margin:0 auto;padding:16px;min-height:100vh}
+aside{background:var(--side);border-radius:24px 0 0 24px;padding:20px 14px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 32px);position:sticky;top:16px;overflow:auto}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;color:var(--deep);padding:0 6px}
+.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#2f6df0,#0b2a6f);display:grid;place-items:center;color:#fff;font-style:normal;font-size:15px}
+.db{font-size:12px;color:var(--mute);padding:0 8px;display:flex;align-items:center;gap:6px}.db:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok)}
+nav a{display:block;padding:9px 12px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:500}
+nav a:hover{background:var(--soft)}nav a.on{background:var(--sel);color:#fff;font-weight:600}
+nav .g{font-size:12px;color:var(--mute);margin:14px 8px 4px;font-weight:600}
+main{background:var(--panel);border-radius:0 24px 24px 0;padding:26px 28px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+h1{font-size:20px;margin:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 14px;font-size:13px}
+.chip.on{background:var(--soft);border-color:var(--accent);color:var(--deep);font-weight:600}
+.chips input[type=date]{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:6px 8px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;margin-bottom:22px}
+.kpi{padding:4px 8px}.kpi+.kpi{border-left:1px solid var(--line);padding-left:28px}
+.kpi small{color:var(--mute)}.big{font-size:44px;font-weight:800;letter-spacing:-.04em;color:var(--deep);margin:6px 0;line-height:1.1}
+.big em{font-style:normal;color:var(--mute);font-size:28px;margin-right:4px}.big span{font-size:16px;color:var(--mute);font-weight:600}
+.sub{font-size:12px;font-weight:600;color:var(--brand)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:22px}
+.stats small{color:var(--mute);display:block}.stats b{font-size:24px}.stats i{display:block;font-style:normal;font-size:11px;color:var(--mute)}
+.g2,.g3{display:grid;gap:20px;margin-bottom:20px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.card{border:1px solid var(--line);border-radius:18px;padding:18px 20px;min-width:0}
+.card h2{font-size:14px;margin:0 0 14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.card .chip{padding:4px 11px;font-size:12px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:170px}
+.bars>div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;font-size:11px;color:var(--mute)}
+.pair{display:flex;gap:3px;align-items:flex-end;width:100%;flex:1}.pair span{flex:1;border-radius:6px 6px 2px 2px;background:var(--brand)}.pair span+span{background:var(--accent)}
+.leg{display:flex;gap:14px;font-size:12px;color:var(--mute);margin-top:10px;flex-wrap:wrap}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.hb{display:grid;gap:10px}.hb div{display:grid;grid-template-columns:110px 1fr 36px;gap:8px;align-items:center;font-size:12px}.hb s{display:block;height:10px;border-radius:6px;background:var(--brand)}.hb b{text-align:right}
+.dn{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.dn ul{list-style:none;margin:0;padding:0;font-size:12px;display:grid;gap:6px}.dn li i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+svg.ln{width:100%;height:190px}
+.tool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.tool input,.tool select,.fm input,.fm select,.fm textarea{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:9px 12px;min-width:0;width:100%}
+.tool input,.tool select{width:auto}.tool input{flex:1;min-width:200px}
+.btn{background:var(--sel);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-weight:600}.btn.gh{background:var(--soft);color:var(--deep)}.btn.rm{background:var(--badbg);color:var(--bad)}.btn.sm{padding:5px 10px;font-size:12px}
+.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th{text-align:left;font-weight:600;color:var(--mute);font-size:12px;padding:12px 14px;background:var(--side);white-space:nowrap}
+td{padding:11px 14px;border-top:1px solid var(--line);white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis}
+td.act{display:flex;gap:6px}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--soft);color:var(--brand)}
+.p-ok{background:var(--okbg);color:var(--ok)}.p-bad{background:var(--badbg);color:var(--bad)}.p-warn{background:var(--warnbg);color:var(--warn)}
+.empty{padding:34px;text-align:center;color:var(--mute)}
+.box{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--side)}
+dialog{border:0;border-radius:20px;padding:0;width:min(640px,94vw);background:var(--panel);color:var(--ink);box-shadow:0 20px 60px rgba(8,25,60,.35)}
+dialog::backdrop{background:rgba(8,20,45,.55)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line);font-weight:700;font-size:16px}
+.fm{padding:18px 22px;display:grid;grid-template-columns:1fr 1fr;gap:14px;max-height:68vh;overflow:auto}
+.fm label{display:grid;gap:5px;font-size:12px;color:var(--mute);font-weight:600}.fm .w{grid-column:1/-1}
+.ft{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.err{color:var(--bad);font-size:13px;margin-right:auto}
+.x{background:none;border:0;font-size:22px;color:var(--mute)}
+#toast{position:fixed;right:20px;bottom:20px;background:var(--deep);color:var(--panel);padding:12px 18px;border-radius:12px;font-weight:600;display:none;z-index:9}
+@media(max-width:1000px){.app{grid-template-columns:1fr;padding:0}aside{position:static;max-height:none;border-radius:0}main{border-radius:0;padding:20px 16px}.kpis,.g2,.g3{grid-template-columns:1fr}.kpi+.kpi{border-left:0;padding-left:8px;margin-top:16px}.stats{grid-template-columns:repeat(2,1fr)}.fm{grid-template-columns:1fr}.big{font-size:36px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside><div class="logo"><i>T</i>TyCred</div><div class="db" id="dbs">Conectando…</div><nav id="nav"></nav></aside>
+<main><div class="top"><h1 id="title"></h1><div class="chips" id="chips"></div></div><div id="view"></div></main>
+</div>
+<dialog id="dlg"><div class="dh"><span id="dt"></span><button class="x" onclick="dlg.close()" aria-label="Fechar">×</button></div><form id="fm" method="dialog"><div class="fm" id="ff"></div><div class="ft"><span class="err" id="er"></span><button type="button" class="btn gh" onclick="dlg.close()">Cancelar</button><button class="btn" id="sv">Salvar</button></div></form></dialog>
+<div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),dlg=$('#dlg');
+const esc=v=>String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const R$=v=>'R$ '+(+v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const D=s=>s?String(s).slice(0,10).split('-').reverse().join('/')+(String(s).length>10&&!/00:00:00$/.test(s)?' '+String(s).slice(11,16):''):'';
+const hum=n=>{n=n.replace(/^ID_/,'').replaceAll('_',' ').toLowerCase();return n[0].toUpperCase()+n.slice(1)};
+const api=async(u,m,b)=>{const r=await fetch(u,m?{method:m,headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})}:undefined);const j=await r.json();if(!r.ok)throw Error(j.error||'Erro');return j};
+let M,cache={},maps={};
+const bust=()=>{cache={};maps={}};
+const rows=async t=>cache[t]??=await api('/api/t/'+t);
+const toast=m=>{const e=$('#toast');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',2600)};
+
+const NAV={Início:[['dashboard','Dashboard']],'CRM do Atendente':['CLIENTE','PESSOA','PARCELA','ACORDO'],'Painel Administrativo':['EMPRESTIMO','CONSULTA_SCORE','FAIXA_JUROS','TAXA_JUROS','POLITICA_DESCONTO','FUNCIONARIO','EMPRESA'],Financeiro:['LANCAMENTO','PARCELA_LANCAMENTO','CONTA_BANCARIA','EMPRESTIMO_FUNCIONARIO'],Jurídico:['CONTRATO'],'Cadastros base':['STATUS_EMPRESTIMO','STATUS_PARCELA','STATUS_CLIENTE','STATUS_CONTRATO','STATUS_ACORDO','STATUS_FUNCIONARIO','TP_LANCAMENTO','FORMA_PAGTO','CARGO','DEPTO','TURNO','GRUPO_PERM','HISTORICO_EMPRESTIMO']};
+const LB={CLIENTE:'Clientes',PESSOA:'Pessoas',EMPRESTIMO:'Empréstimos',CONTRATO:'Contratos',CONSULTA_SCORE:'Consultas de score',PARCELA:'Parcelas',ACORDO:'Acordos',PARCELA_LANCAMENTO:'Baixas de parcela',POLITICA_DESCONTO:'Política de desconto',LANCAMENTO:'Lançamentos',CONTA_BANCARIA:'Contas bancárias',FAIXA_JUROS:'Faixas de juros',TAXA_JUROS:'Taxas de juros',FUNCIONARIO:'Funcionários',EMPRESA:'Empresas',EMPRESTIMO_FUNCIONARIO:'Comissões'};
+const name=t=>LB[t]||hum(t);
+const tone=v=>/REPROV|RECUS|ATRASO|DESCUMPR|INATIV|BLOQ|CANCEL/.test(v)?'bad':/^(ATIVO|APROV|PAGA|PAGO|QUITADO|CUMPRIDO|COMPLETO)/.test(v)?'ok':/ANALISE|PROPOSTA|PENDENTE|RENEG|PARCIAL|AGUARD|RASCUNHO|SUSP/.test(v)?'warn':'';
+const pill=v=>`<span class="pill p-${tone(v)}">${esc(v)}</span>`;
+
+// rótulo legível de qualquer registro (segue FKs: Empréstimo -> Cliente -> Pessoa)
+async function label(t,r){
+  const m=M[t],id=m.pk.map(k=>r[k]).join('-');
+  const n=m.cols.find(c=>/^(NOME|RAZAO|DESCRICAO|LOGIN)/.test(c.name)&&r[c.name]);
+  if(n)return [r[n.name],t=='PESSOA'?r.SOBRENOME:''].join(' ').trim();
+  const f=Object.entries(m.fks).find(([c,x])=>!x.t.startsWith('STATUS_')&&r[c]!=null);
+  if(f){const l=(await lmap(f[1].t)).get(r[f[0]]);return `#${id} · ${l??''}`}
+  return '#'+id;
+}
+const lmap=async t=>maps[t]??=new Map(await Promise.all((await rows(t)).map(async r=>[r[M[t].pk[0]],await label(t,r)])));
+const vis=m=>m.cols.filter(c=>!c.blob&&c.name!=='SENHA_HASH');
+
+async function cell(m,c,r){
+  const v=r[c.name];if(v==null)return '';
+  const fk=m.fks[c.name];
+  if(fk){const l=(await lmap(fk.t)).get(v)??v;return fk.t.startsWith('STATUS_')?pill(l):esc(l)}
+  if(m.enums[c.name]&&/STATUS/.test(c.name))return pill(v);
+  if(c.type=='decimal')return /PERCENT|DESCONTO_MAX|ENTRADA_MIN/.test(c.name)?v.toLocaleString('pt-BR'):R$(v);
+  if(/date/.test(c.type))return D(v);
+  return esc(v);
+}
+
+async function tableView(t){
+  const m=M[t],cs=vis(m).slice(0,9),canEdit=m.pk.length>0;
+  $('#view').innerHTML=`<div class="tool"><input id="q" type="search" placeholder="Buscar em ${esc(name(t).toLowerCase())}" aria-label="Buscar"><button class="btn" id="nw">+ Novo registro</button></div><div id="tbl" class="empty">Carregando…</div>`;
+  const data=await rows(t);
+  const html=await Promise.all(data.map(async r=>(await Promise.all(cs.map(c=>cell(m,c,r)))).map(x=>`<td>${x}</td>`).join('')+(canEdit?`<td class="act"><button class="btn gh sm" data-e>Editar</button><button class="btn rm sm" data-d>Excluir</button></td>`:'')));
+  const draw=()=>{const q=$('#q').value.toLowerCase();
+    const idx=data.map((r,i)=>i).filter(i=>!q||html[i].replace(/<[^>]+>/g,' ').toLowerCase().includes(q));
+    $('#tbl').className='';
+    $('#tbl').innerHTML=`<div class="wrap"><table><thead><tr>${cs.map(c=>`<th>${hum(c.name)}</th>`).join('')}${canEdit?'<th></th>':''}</tr></thead><tbody>${idx.length?idx.map(i=>`<tr data-i="${i}">${html[i]}</tr>`).join(''):`<tr><td class="empty" colspan="${cs.length+1}">Nenhum registro encontrado. Ajuste a busca ou crie um novo registro.</td></tr>`}</tbody></table></div>`;
+    document.querySelectorAll('#tbl tr[data-i]').forEach(tr=>{const r=data[tr.dataset.i];
+      tr.querySelector('[data-e]')?.addEventListener('click',()=>form(t,r));
+      tr.querySelector('[data-d]')?.addEventListener('click',()=>del(t,r))})};
+  $('#q').oninput=draw;$('#nw').onclick=()=>form(t);draw();
+}
+const pkq=(m,r)=>m.pk.map(k=>k+'='+encodeURIComponent(r[k])).join('&');
+async function del(t,r){if(!confirm('Excluir este registro? Esta ação não pode ser desfeita.'))return;
+  try{await api(`/api/t/${t}?${pkq(M[t],r)}`,'DELETE');bust();toast('Registro excluído');route()}catch(e){alert('Não foi possível excluir: '+e.message)}}
+
+async function form(t,r){
+  const m=M[t],edit=!!r;$('#dt').textContent=(edit?'Editar · ':'Novo registro · ')+name(t);$('#er').textContent='';
+  const fields=await Promise.all(vis(m).filter(c=>edit||!c.auto).map(async c=>{
+    const v=r?.[c.name],fk=m.fks[c.name],en=m.enums[c.name],id='f_'+c.name,lock=edit&&m.pk.includes(c.name);
+    let h;
+    if(fk){const mp=await lmap(fk.t);h=`<select id="${id}" ${c.req?'required':''}><option value="">—</option>${[...mp].map(([k,l])=>`<option value="${esc(k)}" ${k==v?'selected':''}>${esc(l)}</option>`).join('')}</select>`}
+    else if(en)h=`<select id="${id}" ${c.req?'required':''}><option value="">—</option>${en.map(o=>`<option ${o==v?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+    else if(c.type=='text'||c.len>100)h=`<textarea id="${id}" rows="2" ${c.req?'required':''}>${esc(v)}</textarea>`;
+    else{const ty=/int/.test(c.type)?'number':c.type=='decimal'?'number':c.type=='date'?'date':/datetime|timestamp/.test(c.type)?'datetime-local':'text';
+      const val=ty=='datetime-local'&&v?String(v).replace(' ','T').slice(0,16):v;
+      h=`<input id="${id}" type="${ty}" ${ty=='number'?'step="'+(c.type=='decimal'?'0.01':'1')+'"':''} ${c.len&&ty=='text'?'maxlength="'+c.len+'"':''} value="${esc(val)}" ${c.req?'required':''} ${lock?'readonly':''} ${!edit&&m.pk.length==1&&m.pk[0]==c.name?'placeholder="Automático"':''}>`}
+    return {c,h:`<label class="${c.len>100||c.type=='text'?'w':''}">${hum(c.name)}${c.req?' *':''}${h}</label>`}}));
+  $('#ff').innerHTML=fields.map(f=>f.h).join('');
+  $('#fm').onsubmit=async e=>{e.preventDefault();const b={};
+    fields.forEach(({c})=>{let v=$('#f_'+c.name).value;if(/datetime|timestamp/.test(c.type))v=v.replace('T',' ');b[c.name]=v});
+    try{edit?await api(`/api/t/${t}?${pkq(m,r)}`,'PUT',b):await api('/api/t/'+t,'POST',b);dlg.close();bust();toast(edit?'Alterações salvas':'Registro criado');route()}
+    catch(x){$('#er').textContent=x.message}};
+  dlg.showModal();
+}
+
+// ---------- Dashboard ----------
+let per='mes',de='',ate='',ser='Desembolsos';
+const PER=[['hoje','Hoje'],['mes','Esse mês'],['30d','Últimos 30 dias'],['tudo','Tudo'],['custom','Personalizar']];
+const CL=['#1d4ed8','#5b8def','#9bb9f5','#0b2a6f','#7aa2ff','#c5d6fb'];
+const k=v=>v>=1e6?(v/1e6).toFixed(1)+' mi':v>=1e3?Math.round(v/1e3)+' mil':Math.round(v);
+const mm=s=>s.slice(5)+'/'+s.slice(2,4);
+const big=v=>{const[a,b]=(+v).toFixed(2).split('.');return `<div class="big"><em>R$</em>${(+a).toLocaleString('pt-BR')}<span>,${b}</span></div>`};
+const hbar=(d,f)=>{const mx=Math.max(1,...d.map(x=>x.qt));return d.length?`<div class="hb">${d.map(x=>`<div><span>${esc(x.n)}</span><s style="width:${x.qt/mx*100}%"></s><b>${x.qt}</b></div>`).join('')}</div>`:'<div class="empty">Sem dados no período.</div>'};
+const donut=(d,key)=>{const T=d.reduce((a,x)=>a+x[key],0);if(!T)return '<div class="empty">Sem dados.</div>';const C=2*Math.PI*60;let a=0;
+  return `<div class="dn"><svg viewBox="0 0 160 160" width="140" height="140" role="img"><g transform="rotate(-90 80 80)">${d.map((x,i)=>{const l=x[key]/T*C,s=`<circle r="60" cx="80" cy="80" fill="none" stroke="${CL[i%6]}" stroke-width="22" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-a}"><title>${esc(x.n)}</title></circle>`;a+=l;return s}).join('')}</g><text x="80" y="86" text-anchor="middle" font-size="${key=='v'?15:22}" font-weight="700" fill="var(--ink)">${key=='v'?k(T):T}</text></svg><ul>${d.map((x,i)=>`<li><i style="background:${CL[i%6]}"></i>${esc(x.n)} · ${key=='v'?R$(x.v):x[key]}</li>`).join('')}</ul></div>`};
+async function dash(){
+  $('#view').innerHTML='<div class="empty">Carregando indicadores…</div>';
+  const d=await api(`/api/dashboard?p=${per}&de=${de}&ate=${ate}`);
+  const ms=[...new Set([...d.mensal.map(x=>x.m),...d.rmensal.map(x=>x.m)])].sort().slice(-12);
+  const get=(a,f)=>ms.map(m=>+(a.find(x=>x.m==m)?.[f])||0);
+  const S={Desembolsos:get(d.mensal,'v'),Recebimentos:get(d.rmensal,'v'),'Ticket médio':get(d.mensal,'t')};
+  const dv=S.Desembolsos,rv=S.Recebimentos,mx=Math.max(1,...dv,...rv);
+  const s=S[ser],hi=Math.max(1,...s)*1.1,lo=Math.min(...s,hi)*.8,n=s.length,
+    pts=s.map((v,i)=>[50+(n>1?i*520/(n-1):260),170-(v-lo)/(hi-lo||1)*150]),path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const inad=d.aberto.v?d.atraso.v/d.aberto.v*100:0;
+  $('#view').innerHTML=`<div class="kpis"><div class="kpi"><small>Carteira em aberto</small>${big(d.aberto.v)}<span class="sub">${d.aberto.qt} parcelas a receber</span></div><div class="kpi"><small>Recebido no período</small>${big(d.rec.v)}<span class="sub">${d.rec.qt} baixas registradas</span></div></div>
+  <div class="stats"><div><small>Clientes ativos</small><b>${d.ativos}</b></div><div><small>Novos empréstimos</small><b>${d.novos.qt}</b><i>${R$(d.novos.v)} aprovados</i></div><div><small>Parcelas em atraso</small><b>${d.atraso.qt}</b><i>${R$(d.atraso.v)}</i></div><div><small>Acordos no período</small><b>${d.acordos}</b></div><div><small>Inadimplência</small><b>${inad.toFixed(1).replace('.',',')}%</b><i>sobre a carteira em aberto</i></div></div>
+  <div class="g2"><div class="card"><h2>Desembolsos x recebimentos por mês</h2>${ms.length?`<div class="bars">${ms.map((m,i)=>`<div title="${mm(m)}"><div class="pair"><span style="height:${dv[i]/mx*100}%"></span><span style="height:${rv[i]/mx*100}%"></span></div>${mm(m)}</div>`).join('')}</div><div class="leg"><span><i style="background:var(--brand)"></i>Desembolsos</span><span><i style="background:var(--accent)"></i>Recebimentos</span></div>`:'<div class="empty">Sem movimentação registrada.</div>'}</div>
+  <div class="card"><h2>Evolução<span class="chips">${Object.keys(S).map(x=>`<button class="chip ${x==ser?'on':''}" data-s="${x}">${x}</button>`).join('')}</span></h2>${n?`<svg class="ln" viewBox="0 0 600 200" role="img" aria-label="Evolução de ${ser}"><text x="44" y="26" text-anchor="end" font-size="10" fill="var(--mute)">${k(hi/1.1)}</text><text x="44" y="170" text-anchor="end" font-size="10" fill="var(--mute)">${k(lo)}</text><path d="${path} L${pts[n-1][0]} 180 L${pts[0][0]} 180Z" fill="var(--soft)" opacity=".7"/><path d="${path}" fill="none" stroke="var(--brand)" stroke-width="3" stroke-linejoin="round"/>${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="var(--panel)" stroke="var(--brand)" stroke-width="2.5"><title>${mm(ms[i])}: ${ser=='Ticket médio'||1?R$(s[i]):''}</title></circle><text x="${p[0]}" y="196" text-anchor="middle" font-size="10" fill="var(--mute)">${mm(ms[i])}</text>`).join('')}</svg>`:'<div class="empty">Sem dados.</div>'}</div></div>
+  <div class="g3"><div class="card"><h2>Empréstimos por status</h2>${hbar(d.emp)}</div><div class="card"><h2>Carteira por status da parcela</h2>${donut(d.parc,'v')}</div><div class="card"><h2>Clientes por status</h2>${donut(d.clis,'qt')}</div></div>
+  <div class="card"><h2>Faixas de score consultadas</h2>${hbar(d.score)}</div>`;
+}
+function chips(on){$('#chips').innerHTML=on?PER.map(([i,l])=>`<button class="chip ${i==per?'on':''}" data-p="${i}">${l}</button>`).join('')+(per=='custom'?`<input type="date" id="de" value="${de}" aria-label="De"><input type="date" id="ate" value="${ate}" aria-label="Até"><button class="chip" id="ap">Aplicar</button>`:''):''}
+document.addEventListener('click',e=>{const p=e.target.closest('[data-p]'),s=e.target.closest('[data-s]');
+  if(p){per=p.dataset.p;if(per!='custom')route();else chips(true)}
+  if(s){ser=s.dataset.s;route()}
+  if(e.target.id=='ap'){de=$('#de').value;ate=$('#ate').value;route()}});
+
+async function route(){
+  const h=(location.hash||'#dashboard').slice(1),t=M[h]?h:'dashboard';
+  $('#title').textContent=t=='dashboard'?'Dashboard':name(t);chips(t=='dashboard');
+  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')=='#'+t));
+  try{t=='dashboard'?await dash():await tableView(t)}catch(e){$('#view').innerHTML=`<div class="box"><b>Não foi possível carregar os dados.</b><p>${esc(e.message)}</p></div>`}
+}
+(async()=>{
+  try{M=await api('/api/meta')}catch(e){$('#dbs').textContent='Sem conexão';$('#view').innerHTML='<div class="box"><b>API indisponível.</b><p>Inicie o servidor com <code>npm start</code> e abra http://localhost:3000.</p></div>';return}
+  $('#dbs').textContent='Banco tycred · conectado';
+  $('#nav').innerHTML=Object.entries(NAV).map(([g,l])=>`<div class="g">${g}</div>`+l.filter(x=>Array.isArray(x)||M[x]).map(x=>{const[id,l2]=Array.isArray(x)?x:[x,name(x)];return `<a href="#${id}">${l2}</a>`}).join('')).join('');
+  addEventListener('hashchange',route);route();
+})();
+</script>
+</body>
+</html>
